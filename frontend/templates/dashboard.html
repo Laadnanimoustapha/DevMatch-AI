@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠💼 DevMatch AI - Resume & Code Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>DevMatch AI</h1>
+                    <span class="version">v1.0</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="showStats()">
+                        <i class="fas fa-chart-bar"></i> Stats
+                    </button>
+                    <button class="btn btn-outline" onclick="exportReport()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h2>🚀 Analyze Your Developer Profile</h2>
+                    <p>Upload your resume, code samples, or portfolio to get AI-powered insights and job recommendations.</p>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Resume Analysis</h3>
+                            <p>ML-powered keyword extraction and ATS optimization</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-code"></i>
+                            <h3>Code Quality</h3>
+                            <p>Multi-language code analysis and best practices</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-briefcase"></i>
+                            <h3>Job Matching</h3>
+                            <p>Personalized job recommendations based on skills</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-palette"></i>
+                            <h3>Portfolio Review</h3>
+                            <p>UI/UX analysis and improvement suggestions</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="upload-container">
+                    <div class="upload-tabs">
+                        <button class="tab-btn active" data-tab="resume">
+                            <i class="fas fa-file-alt"></i> Resume
+                        </button>
+                        <button class="tab-btn" data-tab="code">
+                            <i class="fas fa-code"></i> Code
+                        </button>
+                        <button class="tab-btn" data-tab="portfolio">
+                            <i class="fas fa-palette"></i> Portfolio
+                        </button>
+                    </div>
+
+                    <div class="upload-content">
+                        <!-- Resume Upload -->
+                        <div class="tab-content active" id="resume-tab">
+                            <div class="upload-area" id="resume-upload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h3>Upload Your Resume</h3>
+                                <p>Supported formats: PDF, DOC, DOCX, TXT</p>
+                                <input type="file" id="resume-file" accept=".pdf,.doc,.docx,.txt" hidden>
+                                <button class="btn btn-primary" onclick="document.getElementById('resume-file').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Code Upload -->
+                        <div class="tab-content" id="code-tab">
+                            <div class="upload-area" id="code-upload">
+                                <i class="fas fa-code"></i>
+                                <h3>Upload Code Sample</h3>
+                                <p>Supported: Python, C++, Java, Go, JavaScript</p>
+                                <input type="file" id="code-file" accept=".py,.cpp,.c,.h,.hpp,.java,.go,.js,.ts" hidden>
+                                <button class="btn btn-primary" onclick="document.getElementById('code-file').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Portfolio Upload -->
+                        <div class="tab-content" id="portfolio-tab">
+                            <div class="upload-area" id="portfolio-upload">
+                                <i class="fas fa-palette"></i>
+                                <h3>Upload Portfolio</h3>
+                                <p>Supported: ZIP, RAR, TAR archives</p>
+                                <input type="file" id="portfolio-file" accept=".zip,.rar,.tar,.gz" hidden>
+                                <button class="btn btn-primary" onclick="document.getElementById('portfolio-file').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="results-container">
+                    <h2>📊 Analysis Results</h2>
+                    <div class="results-content" id="results-content">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Job Recommendations Section -->
+            <section class="jobs-section" id="jobs-section" style="display: none;">
+                <div class="jobs-container">
+                    <h2>💼 Job Recommendations</h2>
+                    <div class="jobs-content" id="jobs-content">
+                        <!-- Job recommendations will be populated here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <h3>Analyzing Your File...</h3>
+                <p id="loading-text">Please wait while we process your submission</p>
+            </div>
+        </div>
+
+        <!-- Stats Modal -->
+        <div class="modal" id="stats-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-chart-bar"></i> Application Statistics</h3>
+                    <button class="close-btn" onclick="closeModal('stats-modal')">&times;</button>
+                </div>
+                <div class="modal-body" id="stats-content">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
